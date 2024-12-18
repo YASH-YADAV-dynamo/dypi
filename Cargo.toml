@@ -1,0 +1,24 @@
+[package]
+name = "dypi"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = { version = "4.0", features = ["derive"] }
+dialoguer = "0.10.4"  # Explicitly specify the version
+tide = "0.16.0"
+async-std = "1.12.0"
+
+[package]
+name = "dypi"
+version = "0.1.0"
+authors = ["Yash Yadav <yash2yk2@gmail.com>"]
+edition = "2021"
+license = "MIT"
+description = "A CLI tool to create Rust APIs"
+homepage = "https://github.com/yourusername/api-maker"
+repository = "https://github.com/yourusername/api-maker"
+readme = "README.md"
+keywords = ["cli", "rust", "tide", "api"]
+categories = ["command-line-utilities", "development-tools"]
+
