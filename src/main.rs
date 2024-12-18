@@ -140,7 +140,7 @@ async fn generate_project(
     // Create project directory
     let project_dir = Path::new(project_name);
     if !project_dir.exists() {
-        std::fs::create_dir(project_dir).expect("Failed to create project directory");
+        fs::create_dir(project_dir).expect("Failed to create project directory");
     }
 
     // Generate Cargo.toml
@@ -157,6 +157,8 @@ edition = "2021"
 [dependencies]
 tide = "0.16.0"
 async-std = {{ version = "1.10", features = ["attributes"] }}
+clap = "4.0"
+dialoguer = "0.10"
 "#,
         name = project_name
     )
@@ -165,7 +167,7 @@ async-std = {{ version = "1.10", features = ["attributes"] }}
     // Generate src/main.rs
     let src_dir = project_dir.join("src");
     if !src_dir.exists() {
-        std::fs::create_dir(&src_dir).expect("Failed to create src directory");
+        fs::create_dir(&src_dir).expect("Failed to create src directory");
     }
 
     let main_rs_path = src_dir.join("main.rs");
@@ -174,6 +176,7 @@ async-std = {{ version = "1.10", features = ["attributes"] }}
     writeln!(
         main_rs,
         r#"use tide;
+use async_std::task;
 
 #[async_std::main]
 async fn main() -> tide::Result<()> {{
