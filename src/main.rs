@@ -156,7 +156,7 @@ edition = "2021"
 
 [dependencies]
 tide = "0.16.0"
-async-std = {{ version = "1.10", features = ["attributes"] }}
+async-std = {{ version = "1.12.0", features = ["attributes"] }}
 clap = "4.0"
 dialoguer = "0.10"
 "#,
