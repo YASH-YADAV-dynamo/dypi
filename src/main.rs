@@ -1,5 +1,6 @@
 use clap::{Parser};
 use dialoguer::{MultiSelect, Input, theme::ColorfulTheme};
+use async_std::task; // Ensure async runtime is used correctly
 use std::process;
 
 #[derive(Parser, Debug)]
@@ -22,6 +23,11 @@ struct Endpoint {
 
 // Entry point of the application
 fn main() {
+    task::block_on(run());
+}
+
+// Async function for main logic
+async fn run() {
     // Parse CLI arguments
     let args = Cli::parse();
     let project_name = args.project_name;
@@ -44,7 +50,7 @@ fn main() {
 
     let selected_api_type = api_types[selection[0]];
 
-    let (endpoints, graphql_schemas) = configure_api(selected_api_type);
+    let (endpoints, graphql_schemas) = configure_api(selected_api_type).await;
 
     println!("Selected API type: {}", selected_api_type);
 
@@ -60,11 +66,11 @@ fn main() {
         }
     }
 
-    generate_project(&project_name, selected_api_type, &endpoints, &graphql_schemas);
+    generate_project(&project_name, selected_api_type, &endpoints, &graphql_schemas).await;
 }
 
 // Function to configure API based on the selected type
-fn configure_api(api_type: &str) -> (Vec<Endpoint>, Vec<GraphQLSchema>) {
+async fn configure_api(api_type: &str) -> (Vec<Endpoint>, Vec<GraphQLSchema>) {
     let mut endpoints = Vec::new();
     let mut graphql_schemas = Vec::new();
 
@@ -117,7 +123,7 @@ fn configure_api(api_type: &str) -> (Vec<Endpoint>, Vec<GraphQLSchema>) {
 }
 
 // Function to generate the project output
-fn generate_project(
+async fn generate_project(
     project_name: &str,
     selected_api_type: &str,
     endpoints: &[Endpoint],
@@ -132,10 +138,7 @@ fn generate_project(
         println!("Configuring REST API endpoints...");
         for endpoint in endpoints {
             let method_lower = endpoint.method.to_lowercase();
-            println!(
-                "- Path: {}, Method: {}",
-                endpoint.path, method_lower
-            );
+            println!("- Path: {}, Method: {}", endpoint.path, method_lower);
         }
     } else if selected_api_type == "GraphQL" {
         println!("Configuring GraphQL schemas...");
