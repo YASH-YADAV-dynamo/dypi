@@ -1,46 +1,79 @@
-Dypi
-Dypi is a CLI tool to create Rust-based APIs with ease. It scaffolds fully functional API projects using the Tide web framework, empowering developers to focus on their application's logic rather than setup boilerplate.
+# Dypi
 
-Whether you're building RESTful APIs or GraphQL endpoints, Dypi is your starting point to quickly bootstrap your API projects.
+Dypi is a powerful CLI tool for effortlessly creating Rust-based APIs, designed to streamline your API development workflow.
 
-Features
-Interactive CLI to scaffold APIs.
-Choose between different API types (e.g., REST, GraphQL).
-Automatically generates project structure and files.
-Pre-configured with the Tide web framework.
-Installation
-To use Dypi, first install the crate globally using cargo:
+## 🚀 Features
 
-bash:
-Copy code
+- **Interactive CLI Scaffolding**: Quickly bootstrap your API projects with guided setup
+- **Flexible API Types**: 
+  - REST API support
+  - Powered by the Tide web framework
+- **Automatic Project Generation**: 
+  - Generates complete project structure
+  - Pre-configured boilerplate code
+  - Reduces setup time and complexity
+
+## 📦 Installation
+
+Install Dypi globally using Cargo:
+
+```bash
 cargo install dypi
-Usage
-Run the CLI:
+```
 
-bash
-Copy code
+## 🛠 Usage
+
+Creating a new API project is as simple as running:
+
+```bash
 dypi <project_name>
-Follow the prompts to select the type of API you want to create:
+```
 
-REST API
-GraphQL API (future implementation)
-Navigate to the generated project directory and build your API:
+### Workflow
 
-bash
-Copy code
-cd <project_name>
-cargo run
-Example
-Here’s a quick example to create a new REST API project:
+1. Run the CLI
+2. Select your preferred API type 
+3. Follow interactive prompts
+4. Navigate to your new project directory
+5. Start developing!
 
-bash
-Copy code
-# Create a new project named "my-api"
+## 🌟 Quick Example
+
+```bash
+# Create a new API project
 dypi my-api
 
-# Navigate into the project directory
+# Navigate to project directory
 cd my-api
 
 # Run the API
 cargo run
-The API will be available at http://127.0.0.1:8080.
+```
+
+Your API will be available at `http://127.0.0.1:8080`
+
+## 🔧 Project Structure
+
+After generating a project, you'll have a typical Rust project structure:
+
+```
+my-api/
+├── Cargo.toml
+├── src/
+│   ├── main.rs
+└
+```
+
+## 🛣️ Roadmap
+
+- [x] REST API
+- [ ] GraphQL API 
+
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## 📧 Contact
+
+Published by Yash Yadav, feel free to connect at "yash2yk2@gmail.com"
