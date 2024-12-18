@@ -1,6 +1,6 @@
 use clap::{Parser};
 use dialoguer::{MultiSelect, Input, theme::ColorfulTheme};
-use async_std::task; // Ensure async runtime is used correctly
+use async_std::task; 
 use std::process;
 use std::fs::{self, File};
 use std::io::{self, Write};
@@ -36,7 +36,7 @@ async fn run() {
     let project_name = args.project_name;
 
     // Define available API types
-    let api_types = vec!["REST", "GraphQL"];
+    let api_types = vec!["REST"];
     let selection = MultiSelect::with_theme(&ColorfulTheme::default())
         .with_prompt("What type of API do you want? (Use SPACE to select, ENTER to confirm)")
         .items(&api_types)
@@ -102,7 +102,6 @@ async fn configure_api(api_type: &str) -> (Vec<Endpoint>, Vec<GraphQLSchema>) {
                     .interact()
                     .unwrap_or_default();
 
-                // Store each selected method in the `endpoints` vector
                 if method_selection.is_empty() {
                     println!("No methods selected. Defaulting to GET.");
                     endpoints.push(Endpoint {
@@ -119,11 +118,40 @@ async fn configure_api(api_type: &str) -> (Vec<Endpoint>, Vec<GraphQLSchema>) {
                 }
             }
         }
+        "GraphQL" => {
+            let num_schemas: usize = Input::new()
+                .with_prompt("How many GraphQL schemas do you want to create?")
+                .default(1)
+                .interact_text()
+                .unwrap_or(1);
+
+            for i in 1..=num_schemas {
+                println!("\nConfiguring GraphQL Schema #{}", i);
+
+                // Get the schema name
+                let schema_name: String = Input::new()
+                    .with_prompt("Enter the name of the schema")
+                    .interact_text()
+                    .unwrap();
+
+                // Get the type kind (e.g., Object, Interface)
+                let schema_type: String = Input::new()
+                    .with_prompt("Enter the type kind (Object, Interface, Union)")
+                    .interact_text()
+                    .unwrap();
+
+                graphql_schemas.push(GraphQLSchema {
+                    name: schema_name.clone(),
+                    type_kind: schema_type.clone(),
+                });
+            }
+        }
         _ => panic!("Unsupported API type"),
     }
 
     (endpoints, graphql_schemas)
 }
+
 
 // Function to generate the project output
 async fn generate_project(
