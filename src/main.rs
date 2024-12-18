@@ -2,6 +2,9 @@ use clap::{Parser};
 use dialoguer::{MultiSelect, Input, theme::ColorfulTheme};
 use async_std::task; // Ensure async runtime is used correctly
 use std::process;
+use std::fs::{self, File};
+use std::io::{self, Write};
+use std::path::Path;
 
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
@@ -134,16 +137,54 @@ async fn generate_project(
         project_name, selected_api_type
     );
 
-    if selected_api_type == "REST" {
-        println!("Configuring REST API endpoints...");
-        for endpoint in endpoints {
-            let method_lower = endpoint.method.to_lowercase();
-            println!("- Path: {}, Method: {}", endpoint.path, method_lower);
-        }
-    } else if selected_api_type == "GraphQL" {
-        println!("Configuring GraphQL schemas...");
-        for schema in graphql_schemas {
-            println!("- Name: {}, Type: {}", schema.name, schema.type_kind);
-        }
+    // Create project directory
+    let project_dir = Path::new(project_name);
+    if !project_dir.exists() {
+        std::fs::create_dir(project_dir).expect("Failed to create project directory");
     }
+
+    // Generate Cargo.toml
+    let cargo_toml_path = project_dir.join("Cargo.toml");
+    let mut cargo_toml = File::create(&cargo_toml_path).expect("Failed to create Cargo.toml");
+
+    writeln!(
+        cargo_toml,
+        r#"[package]
+name = "{name}"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tide = "0.16.0"
+async-std = {{ version = "1.10", features = ["attributes"] }}
+"#,
+        name = project_name
+    )
+    .expect("Failed to write to Cargo.toml");
+
+    // Generate src/main.rs
+    let src_dir = project_dir.join("src");
+    if !src_dir.exists() {
+        std::fs::create_dir(&src_dir).expect("Failed to create src directory");
+    }
+
+    let main_rs_path = src_dir.join("main.rs");
+    let mut main_rs = File::create(&main_rs_path).expect("Failed to create main.rs");
+
+    writeln!(
+        main_rs,
+        r#"use tide;
+
+#[async_std::main]
+async fn main() -> tide::Result<()> {{
+    let mut app = tide::new();
+    app.at("/").get(|_| async {{ Ok("Hello, world!") }});
+    app.listen("127.0.0.1:8080").await?;
+    Ok(())
+}}
+"#
+    )
+    .expect("Failed to write to main.rs");
+
+    println!("Project '{}' has been successfully generated!", project_name);
 }
